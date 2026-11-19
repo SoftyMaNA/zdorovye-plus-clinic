@@ -2,6 +2,11 @@
 declare(strict_types=1);
 require __DIR__.'/../src/database.php';
 require __DIR__.'/../src/AppointmentService.php';
+session_set_cookie_params([
+    'httponly' => true,
+    'samesite' => 'Lax',
+    'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+]);
 session_start();
 $_SESSION['csrf'] ??= bin2hex(random_bytes(32));
 function e(mixed $value): string {return htmlspecialchars((string)$value,ENT_QUOTES,'UTF-8');}
