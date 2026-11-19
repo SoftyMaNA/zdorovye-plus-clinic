@@ -1,0 +1,29 @@
+$ git log --all --graph --oneline --decorate
+*   0b5a9f8 (HEAD -> develop) merge: hotfix back into develop
+|\  
+* \   302eae5 merge: release back into develop
+|\ \  
+| | | *   4105667 (tag: v1.0.1, main) merge: hotfix 1.0.1
+| | | |\  
+| | | |/  
+| | |/|   
+| | * | 82a8643 (hotfix/1.0.1) fix: preserve cancellation history
+| | |/  
+| | *   a4f118b (tag: v1.0.0) merge: release 1.0.0
+| | |\  
+| | |/  
+| |/|   
+| * | 71d0e76 (release/1.0.0) release: 1.0.0
+|/ /  
+* |   40acab5 merge: appointments into develop
+|\ \  
+| |/  
+|/|   
+| * e06c38d (feature/appointments) feat: appointment scheduling rules
+|/  
+* 5a0da2e init: clinic GitFlow example
+$ git tag -n
+v1.0.0          Clinic 1.0.0
+v1.0.1          Clinic 1.0.1
+$ git status --short --branch
+## develop

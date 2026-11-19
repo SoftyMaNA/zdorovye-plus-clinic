@@ -1,0 +1,13 @@
+$ git add .
+
+$ git commit -m feat: appointment scheduling rules
+[feature/appointments e06c38d] feat: appointment scheduling rules
+ 1 file changed, 2 insertions(+)
+ create mode 100644 appointment_rules.txt
+$ git switch develop
+Switched to branch 'develop'
+$ git merge --no-ff feature/appointments -m merge: appointments into develop
+Merge made by the 'ort' strategy.
+ appointment_rules.txt | 2 ++
+ 1 file changed, 2 insertions(+)
+ create mode 100644 appointment_rules.txt

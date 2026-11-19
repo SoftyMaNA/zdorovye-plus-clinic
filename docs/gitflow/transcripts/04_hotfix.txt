@@ -1,0 +1,25 @@
+$ git switch main
+Switched to branch 'main'
+$ git switch -c hotfix/1.0.1
+Switched to a new branch 'hotfix/1.0.1'
+$ git add .
+
+$ git commit -m fix: preserve cancellation history
+[hotfix/1.0.1 82a8643] fix: preserve cancellation history
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+$ git switch main
+Switched to branch 'main'
+$ git merge --no-ff hotfix/1.0.1 -m merge: hotfix 1.0.1
+Merge made by the 'ort' strategy.
+ VERSION               | 2 +-
+ appointment_rules.txt | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)
+$ git tag -a v1.0.1 -m Clinic 1.0.1
+
+$ git switch develop
+Switched to branch 'develop'
+$ git merge --no-ff hotfix/1.0.1 -m merge: hotfix back into develop
+Merge made by the 'ort' strategy.
+ VERSION               | 2 +-
+ appointment_rules.txt | 1 +
+ 2 files changed, 2 insertions(+), 1 deletion(-)

@@ -1,0 +1,20 @@
+$ git init -b main
+Initialized empty Git repository in /workspace/scratch/77f8f3979631/clinic_lab2/gitflow/local_repository/.git/
+$ git config user.name Денис
+
+$ git config user.email denis@example.invalid
+
+$ git add README.md
+
+$ git commit -m init: clinic GitFlow example
+[main (root-commit) 5a0da2e] init: clinic GitFlow example
+ 1 file changed, 2 insertions(+)
+ create mode 100644 README.md
+$ git switch -c develop
+Switched to a new branch 'develop'
+$ git switch -c feature/appointments
+Switched to a new branch 'feature/appointments'
+$ git branch -a
+  develop
+* feature/appointments
+  main

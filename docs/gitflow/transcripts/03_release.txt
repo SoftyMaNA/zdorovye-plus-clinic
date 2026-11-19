@@ -1,0 +1,26 @@
+$ git switch -c release/1.0.0
+Switched to a new branch 'release/1.0.0'
+$ git add VERSION
+
+$ git commit -m release: 1.0.0
+[release/1.0.0 71d0e76] release: 1.0.0
+ 1 file changed, 1 insertion(+)
+ create mode 100644 VERSION
+$ git switch main
+Switched to branch 'main'
+$ git merge --no-ff release/1.0.0 -m merge: release 1.0.0
+Merge made by the 'ort' strategy.
+ VERSION               | 1 +
+ appointment_rules.txt | 2 ++
+ 2 files changed, 3 insertions(+)
+ create mode 100644 VERSION
+ create mode 100644 appointment_rules.txt
+$ git tag -a v1.0.0 -m Clinic 1.0.0
+
+$ git switch develop
+Switched to branch 'develop'
+$ git merge --no-ff release/1.0.0 -m merge: release back into develop
+Merge made by the 'ort' strategy.
+ VERSION | 1 +
+ 1 file changed, 1 insertion(+)
+ create mode 100644 VERSION
