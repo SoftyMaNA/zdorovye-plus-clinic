@@ -1,0 +1,64 @@
+SET NAMES utf8mb4;
+CREATE TABLE IF NOT EXISTS patients (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ patient_code VARCHAR(32) NOT NULL UNIQUE,
+ active BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS doctors (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ doctor_code VARCHAR(32) NOT NULL UNIQUE,
+ specialty VARCHAR(100) NOT NULL,
+ active BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS appointments (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ patient_id BIGINT UNSIGNED NOT NULL,
+ doctor_id BIGINT UNSIGNED NOT NULL,
+ starts_at DATETIME NOT NULL,
+ ends_at DATETIME NOT NULL,
+ status ENUM('scheduled','cancelled','completed') NOT NULL DEFAULT 'scheduled',
+ CONSTRAINT fk_appointment_patient FOREIGN KEY(patient_id) REFERENCES patients(id),
+ CONSTRAINT fk_appointment_doctor FOREIGN KEY(doctor_id) REFERENCES doctors(id),
+ CONSTRAINT valid_interval CHECK(ends_at > starts_at),
+ INDEX idx_doctor_schedule(doctor_id,status,starts_at,ends_at),
+ INDEX idx_patient_schedule(patient_id,status,starts_at,ends_at)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS icd_diagnoses (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ code VARCHAR(12) NOT NULL UNIQUE,
+ title VARCHAR(200) NOT NULL
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS medications (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(160) NOT NULL UNIQUE
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS services (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ name VARCHAR(160) NOT NULL UNIQUE,
+ price DECIMAL(10,2) NOT NULL CHECK(price>=0)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS medical_records (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ appointment_id BIGINT UNSIGNED NOT NULL,
+ diagnosis_id BIGINT UNSIGNED NULL,
+ notes TEXT NOT NULL,
+ FOREIGN KEY(appointment_id) REFERENCES appointments(id),
+ FOREIGN KEY(diagnosis_id) REFERENCES icd_diagnoses(id)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS lab_results (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ patient_id BIGINT UNSIGNED NOT NULL,
+ test_name VARCHAR(160) NOT NULL,
+ measured_value DECIMAL(12,3) NOT NULL,
+ reference_min DECIMAL(12,3) NOT NULL,
+ reference_max DECIMAL(12,3) NOT NULL,
+ FOREIGN KEY(patient_id) REFERENCES patients(id),
+ CHECK(reference_max>=reference_min)
+) ENGINE=InnoDB;
+CREATE TABLE IF NOT EXISTS audit_log (
+ id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+ appointment_id BIGINT UNSIGNED NOT NULL,
+ event_type ENUM('created','cancelled') NOT NULL,
+ created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+ FOREIGN KEY(appointment_id) REFERENCES appointments(id)
+) ENGINE=InnoDB;
