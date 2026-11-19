@@ -1,0 +1,6 @@
+.env
+tests/results/
+.DS_Store
+.idea/
+.vscode/
+vendor/
