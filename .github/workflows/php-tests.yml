@@ -1,0 +1,55 @@
+name: Clinic PHP MySQL tests
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  clinic-tests:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: test_password
+          MYSQL_DATABASE: clinic_test
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="mysqladmin ping -ptest_password"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    env:
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: clinic_test
+      DB_USER: root
+      DB_PASSWORD: test_password
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up PHP 8.3
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: pdo_mysql
+          coverage: none
+      - name: PHP syntax validation
+        run: find src public tests -name '*.php' -print0 | xargs -0 -n1 php -l
+      - name: Import test schema
+        run: php -r 'require "src/database.php"; database()->exec(file_get_contents("sql/schema.sql"));'
+      - name: Test 1 Free appointment
+        run: php tests/run.php 1
+      - name: Test 2 Interval conflicts
+        if: ${{ !cancelled() }}
+        run: php tests/run.php 2
+      - name: Test 3 Unavailable doctor
+        if: ${{ !cancelled() }}
+        run: php tests/run.php 3
+      - name: Test 4 Cancellation and rebooking
+        if: ${{ !cancelled() }}
+        run: php tests/run.php 4
+      - name: Upload JUnit reports
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: clinic-test-results
+          path: tests/results/*.xml
